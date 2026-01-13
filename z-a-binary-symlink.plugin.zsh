@@ -13,7 +13,7 @@
 
 [[ -d $ZPFX/bin ]] || command mkdir -p "$ZPFX/bin"
 
-autoload :za-lb-atclone-handler :za-lb-atdelete-handler
+autoload +Xz :za-lb-atclone-handler :za-lb-atdelete-handler
 
 # An empty stub to fill the help handler fields
 :za-lb-null-handler() { :; }

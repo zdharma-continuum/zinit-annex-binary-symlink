@@ -26,22 +26,44 @@ if (( ${+ICE[lbin]} )); then
             [[ ${lbin[1]} = "!" ]] && sym="-s"
             if [[ -z ${lbin} && ${#lbins} -eq 0 ]] || [[ ${lbin} = "!" && ${#lbins} -eq 1 ]]; then
                 integer i=0
-                local -aU files=( ./bin/*(x.N) ./**/*(x.OnN) )
-                +zi-log "{dbg} [${#files} files] ${(qq@j;, ;)files} |"
+                local -aU files=(*/bin/*(x*.N) **/*(x.N))
+                +zi-log "{dbg} ${#files} files | ${(qq@)files} |"
                 while [[ ! -f ${files[1]} && ${i} -lt 10 ]]; do
                     ((i++))
+                    +zi-log "{dbg} {b}lbin{rst}: ${i} files >> ${(qq@)files} <<"
                     case ${i} in
-                        (1) files=(${dir}/${id_as:t}(Nnon.))  ;;
-                        (2) [[ -n ${plugin} ]] && files=(${dir}/${plugin}(Nnon.))  ;;
-                        (3) [[ -n ${url} ]] && files=(${dir}/${url:t}(Nnon.))  ;;
-                        (4) files=(${dir}/*/*(xNnon.:t))  ;;
-                        (5) files=(${dir}/**/*(*Nnon.:t))  ;;
-                        (6) files=(${dir}/**/${id_as:t}(xNnon.))  ;;
-                        (7) [[ -n ${plugin} ]] && files=(${dir}/**/${plugin}(Nnon.))  ;;
-                        (8) [[ -n ${url} ]] && files=(${dir}/**/${url:t}(Nnon.))  ;;
-                        (9) files=(${dir}/**/*(*Nnon.:t))  ;;
-                        (10) +zi-log "{e} {b}linkbin{rst}: {ice}lbin{rst} ice did not detect any executable files" ;;
+                        (1)
+                            files=(${dir}/**/${id_as:t}(xNnon.))
+                            ;;
+                        (2)
+                            [[ -n ${plugin} ]] && files=(${dir}/${plugin}(Nnon.))
+                            ;;
+                        (3)
+                            [[ -n ${url} ]] && files=(${dir}/${url:t}(Nnon.))
+                            ;;
+                        (4)
+                            files=(${dir}/*/*(xNnon.:t))
+                            ;;
+                        (5)
+                            files=(${dir}/**/*(*Nnon.:t))
+                            ;;
+                        (6)
+                            files=(${dir}/**/${id_as:t}(xNnon.))
+                            ;;
+                        (7)
+                            [[ -n ${plugin} ]] && files=(${dir}/**/${plugin}(Nnon.))
+                            ;;
+                        (8)
+                            [[ -n ${url} ]] && files=(${dir}/**/${url:t}(Nnon.))
+                            ;;
+                        (9)
+                            files=(${dir}/**/*(*Nnon.:t))
+                            ;;
+                        (10)
+                            +zi-log "{e} {b}linkbin{rst}: {ice}lbin{rst} ice did not detect any executable files"
+                            ;;
                     esac
+                    +zi-log "{dbg} {b}lbin{rst}: ${i} files >> ${(qq@)files} <<"
                 done
                 [[ ${i} -gt 9 ]] && break
                 lbin="${files[1]}"
@@ -78,9 +100,7 @@ if (( ${+ICE[lbin]} )); then
                 local fnam="${srcdst[2]:-${srcdst[1]:t}}"
                 local file="${ZPFX}/bin/${fnam}"
                 {
-                    command chmod +x "${target_binary}" && \
-                    command ln -f "${sym}" "${target_binary}" "${file}" && \
-                    rehash
+                    command chmod +x "${target_binary}" && command ln -f "${sym}" "${target_binary}" "${file}" && rehash
                 }
                 if [[ -x ${file} ]]; then
                     if [[ -x ${target_binary} ]]; then
